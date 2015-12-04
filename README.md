@@ -1,2 +1,2 @@
-# academic_interests
-Plugin to implement an Academic Interests user taxonomy
+# Academic Interests
+Plugin to implement an Academic Interests user taxonomy.
