@@ -21,6 +21,7 @@ class Mla_Academic_Interests {
 		add_action( 'edit_user_profile', array( $this, 'edit_user_mla_academic_interests_section' ) );
 		add_action( 'personal_options_update', array( $this, 'save_user_mla_academic_interests_terms' ) );
 		add_action( 'edit_user_profile_update', array( $this, 'save_user_mla_academic_interests_terms' ) );
+		add_action( 'pre_get_users', array( $this, 'set_academic_interests_query' ) );
 
 	}
 
@@ -162,7 +163,15 @@ class Mla_Academic_Interests {
 		switch ( $column_name ) {
 			case 'users':
 				$term = get_term( $term_id, 'mla_academic_interests' );
-				$out .= $term->count;
+				if ( '0' == $term->count ) {
+					$out .= $term->count;
+				} else {
+					$search_url = add_query_arg( 
+						array( 'academic_interests' => urlencode( $term->term_taxonomy_id ) ),
+						'users.php'
+					);
+					$out .= '<a href="' . esc_url( $search_url ) . '" rel="nofollow">' . $term->count . '</a>';
+				}
 				break;
 			default:
 				break;
@@ -263,6 +272,25 @@ class Mla_Academic_Interests {
 
 	}
 
+	/**
+	 * Filter the admin users query.
+	 *
+	 * @param object $query
+	 *
+	 * @return object
+	 */
+	public function set_academic_interests_query ( $query ) {
+
+		if ( false !== stripos( esc_url( $_SERVER['REQUEST_URI'] ), 'wp-admin/users.php' ) ) {
+			if ( ! empty( $_REQUEST['academic_interests'] ) && is_numeric( $_REQUEST['academic_interests'] ) ) {
+				$query->query_vars['meta_key'] = 'academic_interests';
+				$query->query_vars['meta_value'] = $_REQUEST['academic_interests'];
+				$query->query_vars['meta_compare'] = '=';
+			}
+		}
+
+		return $query;
+	}
 }
 
 $mla_academic_interests = new Mla_Academic_Interests;
