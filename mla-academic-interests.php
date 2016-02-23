@@ -70,11 +70,14 @@ class Mla_Academic_Interests {
 	 */
 	public function mla_academic_interests_cssjs() {
 
-		wp_register_script( 'select2_js', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js', array( 'jquery' ), '120415-1', true );
+		wp_register_script( 'select2_js', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js', array( 'jquery' ), '120415-1', true );
 		wp_enqueue_script( 'select2_js' );
 
-		wp_register_style( 'select2_css', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css', '', '120415-1' );
+		wp_register_style( 'select2_css', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css', '', '120415-1' );
 		wp_enqueue_style( 'select2_css' );
+
+		wp_register_style( 'mla_academic_interests_select2_css', plugin_dir_url( __FILE__ ) . 'assets/css/select2_init.css', '', '120415-1' );
+		wp_enqueue_style( 'mla_academic_interests_select2_css' );
 
 		wp_register_script( 'mla_academic_interests_select2_js', plugin_dir_url( __FILE__ ) . 'assets/js/select2_init.js', array( 'jquery' ), '120415-1', true );
 		wp_enqueue_script( 'mla_academic_interests_select2_js' );
