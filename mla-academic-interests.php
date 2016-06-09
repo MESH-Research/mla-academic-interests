@@ -79,6 +79,8 @@ class Mla_Academic_Interests {
 		wp_register_script( 'mla_academic_interests_select2_js', plugin_dir_url( __FILE__ ) . 'assets/js/select2_init.js', array( 'jquery' ), '022316', true );
 		wp_enqueue_script( 'mla_academic_interests_select2_js' );
 
+		wp_register_style( 'mla_academic_interests_select2_css', plugin_dir_url( __FILE__ ) . 'assets/css/select2_init.css', '', '120415-1' );
+		wp_enqueue_style( 'mla_academic_interests_select2_css' );
 	}
 
 	/**
