@@ -1,5 +1,5 @@
 {
-  "name": "modelm/mla-academic-interests",
+  "name": "mlaa/mla-academic-interests",
   "type": "wordpress-plugin",
   "require": {
     "php": ">=5.3.0",
