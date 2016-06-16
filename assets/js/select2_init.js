@@ -2,10 +2,8 @@
 jQuery(document).ready( function($) {
 
 	$(".js-basic-multiple").select2({
-		maximumSelectionLength: 5,
 	});
 	$(".js-basic-multiple-tags").select2({
-		maximumSelectionLength: 5,
 		tags: "true",
 		tokenSeparators: [',']
 	});
