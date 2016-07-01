@@ -11,12 +11,18 @@ class Mla_Academic_Interests {
 	public function __construct() {
 
 		add_action( 'init', array( $this, 'register_mla_academic_interests_taxonomy' ) );
+		add_action( 'wpmn_register_taxonomies', array( $this, 'register_mla_academic_interests_taxonomy' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'mla_academic_interests_cssjs' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'mla_academic_interests_cssjs' ) );
-		add_action( 'admin_menu', array( $this, 'mla_academic_interests_admin_page' ) );
-		add_filter( 'parent_file', array( $this, 'mla_academic_interests_fix_menu_highlight' ) );
-		add_filter( 'manage_edit-mla_academic_interests_columns', array( $this, 'manage_mla_academic_interests_user_column' ) );
-		add_filter( 'manage_mla_academic_interests_custom_column', array( $this, 'manage_mla_interests_columns' ), 10, 3 );
+
+        	$current_network = get_current_site();
+        	if ( 1 === (int) $current_network->id ) {
+			add_action( 'admin_menu', array( $this, 'mla_academic_interests_admin_page' ) );
+			add_filter( 'parent_file', array( $this, 'mla_academic_interests_fix_menu_highlight' ) );
+			add_filter( 'manage_edit-mla_academic_interests_columns', array( $this, 'manage_mla_academic_interests_user_column' ) );
+			add_filter( 'manage_mla_academic_interests_custom_column', array( $this, 'manage_mla_interests_columns' ), 10, 3 );
+		}
+
 		add_action( 'show_user_profile', array( $this, 'edit_user_mla_academic_interests_section' ) );
 		add_action( 'edit_user_profile', array( $this, 'edit_user_mla_academic_interests_section' ) );
 		add_action( 'personal_options_update', array( $this, 'save_user_mla_academic_interests_terms' ) );
@@ -92,7 +98,7 @@ class Mla_Academic_Interests {
 
 		$interests_list = array();
 
-		$interest_terms = get_terms(
+		$interest_terms = wpmn_get_terms(
 			'mla_academic_interests',
 			array(
 				'orderby' => 'name',
@@ -163,7 +169,7 @@ class Mla_Academic_Interests {
 
 		switch ( $column_name ) {
 			case 'users':
-				$term = get_term( $term_id, 'mla_academic_interests' );
+				$term = wpmn_get_term( $term_id, 'mla_academic_interests' );
 				$out .= $term->count;
 				break;
 			default:
@@ -177,7 +183,7 @@ class Mla_Academic_Interests {
 	/**
 	 * Adds an additional settings section on the edit user/profile page in the admin.
 	 *
-	 * This section allows users to selecttermsinterests from the mla_academic_interests taxonomy.
+	 * This section allows users to select interests from the mla_academic_interests taxonomy.
 	 *
 	 * @param object $user The user object currently being edited.
 	 */
@@ -190,7 +196,7 @@ class Mla_Academic_Interests {
 			return;
 		}
 		/* Get the terms of the 'mla_academic_interests' taxonomy. */
-		$terms = get_terms( 'mla_academic_interests', array( 'hide_empty' => false ) ); ?>
+		$terms = wpmn_get_terms( 'mla_academic_interests', array( 'hide_empty' => false ) ); ?>
 
 		<h3><?php _e( 'Academic Interests' ); ?></h3>
 
@@ -204,7 +210,7 @@ class Mla_Academic_Interests {
 				$html = '<span class="description">Enter interests from the existing list, or add new interests if needed.</span><br />';
 				$html .= '<select name="academic-interests[]" class="js-basic-multiple-tags interests" multiple="multiple" data-placeholder="Enter interests.">';
 				$interest_list = $this->mla_academic_interests_list();
-				$input_interest_list = wp_get_object_terms( $user->ID, 'mla_academic_interests', array( 'fields' => 'names' ) );
+				$input_interest_list = wpmn_get_object_terms( $user->ID, 'mla_academic_interests', array( 'fields' => 'names' ) );
 				foreach ( $interest_list as $interest_key => $interest_value ) {
 					$html .= sprintf('			<option class="level-1" %1$s value="%2$s">%3$s</option>' . "\n",
 						( in_array( $interest_key, $input_interest_list ) ) ? 'selected="selected"' : '',
@@ -241,9 +247,9 @@ class Mla_Academic_Interests {
 		// If array add any new keywords.
 		if ( is_array( $_POST['academic-interests'] ) ) {
 			foreach ( $_POST['academic-interests'] as $term_id ) {
-				$term_key = term_exists( $term_id, 'mla_academic_interests' );
+				$term_key = wpmn_term_exists( $term_id, 'mla_academic_interests' );
 				if ( empty( $term_key ) ) {
-					$term_key = wp_insert_term( sanitize_text_field( $term_id ), 'mla_academic_interests' );
+					$term_key = wpmn_insert_term( sanitize_text_field( $term_id ), 'mla_academic_interests' );
 				}
 				if ( ! is_wp_error( $term_key ) ) {
 					$term_ids[] = intval( $term_key['term_id'] );
@@ -254,8 +260,8 @@ class Mla_Academic_Interests {
 		}
 
 		// Set object terms for tags.
-		$term_taxonomy_ids = wp_set_object_terms( $user_id, $term_ids, 'mla_academic_interests' );
-		clean_object_term_cache( $user_id, 'mla_academic_interests' );
+		$term_taxonomy_ids = wpmn_set_object_terms( $user_id, $term_ids, 'mla_academic_interests' );
+		wpmn_clean_object_term_cache( $user_id, 'mla_academic_interests' );
 
 		// Set user meta for theme query.
 		delete_user_meta( $user_id, 'academic_interests' );
