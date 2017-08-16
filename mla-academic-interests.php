@@ -211,13 +211,17 @@ class Mla_Academic_Interests {
 				$html .= '<select name="academic-interests[]" class="js-basic-multiple-tags interests" multiple="multiple" data-placeholder="Enter interests.">';
 				$interest_list = $this->mla_academic_interests_list();
 				$input_interest_list = wpmn_get_object_terms( $user->ID, 'mla_academic_interests', array( 'fields' => 'names' ) );
+
+				// only add selected interests, load the rest over ajax
 				foreach ( $interest_list as $interest_key => $interest_value ) {
-					$html .= sprintf('			<option class="level-1" %1$s value="%2$s">%3$s</option>' . "\n",
-						( in_array( $interest_key, $input_interest_list ) ) ? 'selected="selected"' : '',
-						$interest_key,
-						$interest_value
-					);
+					if ( in_array( $interest_key, $input_interest_list ) ) {
+						$html .= sprintf('			<option class="level-1" selected="selected" value="%2$s">%3$s</option>' . "\n",
+							$interest_key,
+							$interest_value
+						);
+					}
 				}
+
 				$html .= '</select>';
 				echo $html;
 
