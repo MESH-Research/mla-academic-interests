@@ -29,23 +29,6 @@ class Mla_Academic_Interests_REST_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Does $user_input match $term?
-	 * This function provides a single place to define business logic for what constitutes a match.
-	 * e.g. case insensitivity, prioritize beginning of term vs. middle/end, etc.
-	 *
-	 * @return bool
-	 */
-	public function _is_match( $user_input, $term ) {
-		$match = false;
-
-		if ( false !== strpos( strtolower( $term ), strtolower( $user_input ) ) ) {
-			$match = true;
-		}
-
-		return $match;
-	}
-
-	/**
 	 * Get list of terms that match $_GET['q']
 	 *
 	 * @return WP_REST_Response
@@ -59,22 +42,39 @@ class Mla_Academic_Interests_REST_Controller extends WP_REST_Controller {
 
 		$all_terms = $mla_academic_interests->mla_academic_interests_list();
 
-		// formatted for select2 consumption
-		$matched_terms = [
-			'results' => []
-		];
+		$matched_terms = [];
 
+		// populate array of matches
 		foreach ( $all_terms as $term_id => $term ) {
-			if ( $this->_is_match( $user_input, $term ) ) {
+			if ( false !== strpos( strtolower( $term ), strtolower( $user_input ) ) ) {
 				$matched_term = new stdClass;
 				$matched_term->id = $term_id;
 				$matched_term->text = $term;
 
-				$matched_terms['results'][] = $matched_term;
+				$matched_terms[] = $matched_term;
+			}
+		}
+
+		// prioritize matches with the first letters of a term by moving them to the front of the array
+		foreach ( $matched_terms as $i => $matched_term ) {
+			if ( 0 === strpos( strtolower( $matched_term->text ), strtolower( $user_input ) ) ) {
+				unset( $matched_terms[ $i ] );
+				array_unshift( $matched_terms, $matched_term );
+			}
+		}
+
+		// put exact matches above everything else
+		foreach ( $matched_terms as $i => $matched_term ) {
+			if ( strtolower( $matched_term->text ) === strtolower( $user_input ) ) {
+				unset( $matched_terms[ $i ] );
+				array_unshift( $matched_terms, $matched_term );
 			}
 		}
 
 		$response = new WP_REST_Response;
+
+		// formatted for select2 consumption
+		$matched_terms = [ 'results' => $matched_terms ];
 
 		$response->set_data( $matched_terms );
 
