@@ -35,13 +35,11 @@ jQuery(document).ready( function($) {
 
       // this is an exact case-sensitive match already, accept & move on
       if (input_term === term) {
-        console.log( 'exact match' );
         return;
       }
 
       // if this term already exists with a different case, select that instead
       if (input_term.toUpperCase() === term.toUpperCase()) {
-        console.log( 'case-insensitive match' );
         // overwrite the user-input term with the canonical one
         e.params.args.data.id = term;
         e.params.args.data.text = term;
