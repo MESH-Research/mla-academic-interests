@@ -33,13 +33,8 @@ jQuery(document).ready( function($) {
     $.each(existing_terms, function(i, term_el) {
       var term = $(term_el).text();
 
-      // this is an exact case-sensitive match already, accept & move on
-      if (input_term === term) {
-        return;
-      }
-
       // if this term already exists with a different case, select that instead
-      if (input_term.toUpperCase() === term.toUpperCase()) {
+      if (input_term != term && input_term.toUpperCase() == term.toUpperCase()) {
         // overwrite the user-input term with the canonical one
         e.params.args.data.id = term;
         e.params.args.data.text = term;
