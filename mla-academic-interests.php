@@ -215,7 +215,7 @@ class Mla_Academic_Interests {
 				// only add selected interests, load the rest over ajax
 				foreach ( $interest_list as $interest_key => $interest_value ) {
 					if ( in_array( $interest_key, $input_interest_list ) ) {
-						$html .= sprintf('			<option class="level-1" selected="selected" value="%2$s">%3$s</option>' . "\n",
+						$html .= sprintf('			<option class="level-1" selected="selected" value="%1$s">%2$s</option>' . "\n",
 							$interest_key,
 							$interest_value
 						);
