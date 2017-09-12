@@ -277,6 +277,7 @@ class Mla_Academic_Interests {
 
 }
 
+global $mla_academic_interests;
 $mla_academic_interests = new Mla_Academic_Interests;
 
 
