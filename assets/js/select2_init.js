@@ -32,6 +32,17 @@ jQuery(document).ready( function($) {
     }
   } );
 
+  // set selected to false for all options.
+  // this allows users to click a term in the dropdown even if it is already selected.
+  // (instead of that click resulting in the unselecting of the term)
+  $( '.js-basic-multiple-tags' ).on( 'select2:open', function( e ) {
+    var observer = new MutationObserver( function() {
+      $( '.select2-results__options [aria-selected]' ).attr( 'aria-selected', false );
+    } );
+
+    observer.observe( $( '.select2-results__options' )[0], { childList: true } );
+  } );
+
   // ensure user-input terms conform to existing terms regardless of case
   // e.g. if user enters "music" and "Music" exists, select "Music"
   $( '.js-basic-multiple-tags' ).on( 'select2:selecting', function( e ) {
