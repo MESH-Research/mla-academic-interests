@@ -66,7 +66,7 @@ class Mla_Academic_Interests_REST_Controller extends WP_REST_Controller {
 			}
 
 			// prioritize matches with the first letters of a term by moving them to the front of the array
-			foreach ( array_reverse( $matched_terms ) as $i => $matched_term ) {
+			foreach ( array_reverse( $matched_terms, true ) as $i => $matched_term ) {
 				if ( 0 === strpos( strtolower( $matched_term->text ), strtolower( $user_input ) ) ) {
 					unset( $matched_terms[ $i ] );
 					array_unshift( $matched_terms, $matched_term );
