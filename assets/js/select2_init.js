@@ -37,7 +37,6 @@ jQuery(document).ready( function($) {
   $( '.js-basic-multiple-tags' ).on( 'select2:selecting', function( e ) {
     var input_term = e.params.args.data.id;
     var existing_terms = $( '.select2-results__option' ).not( '.select2-results__option--highlighted' );
-    var selected_terms = $( '.js-basic-multiple-tags' ).val() || [];
     var Select2 = $( '.js-basic-multiple-tags' ).data( 'select2' );
 
     $.each( existing_terms, function( i, term_el ) {
