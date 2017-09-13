@@ -73,7 +73,7 @@ class Mla_Academic_Interests_REST_Controller extends WP_REST_Controller {
 				}
 			}
 
-			wp_cache_set( $cache_key, $matched_terms );
+			wp_cache_set( $cache_key, $matched_terms, null, 300 );
 
 		}
 
