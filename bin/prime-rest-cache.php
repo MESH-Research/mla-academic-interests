@@ -1,16 +1,18 @@
 <?php
-
 /**
- * script to prime the object cache for existing terms
- * once primed, user time spent waiting for results after entering an existing term will be minimal
+ * Script to prime the object cache for existing terms.
  *
- * if you want to remove existing term search cache first, flush object cache.
+ * Once primed, user time spent waiting for results after entering an existing term will be minimal.
+ *
+ * If you want to remove existing term search cache first, flush object cache.
  * wp cache flush
  *
- * then, run this script with wp-cli eval-file e.g.
+ * Then, run this script with wp-cli eval-file e.g.
  * wp eval-file bin/prime-rest-cache.php
  *
- * use --quiet if you don't want a line of output for each term.
+ * Use --quiet if you don't want a line of output for each term.
+ *
+ * @package Mla_Academic_Interests
  */
 
 global $mla_academic_interests;
@@ -28,6 +30,4 @@ foreach ( $mla_academic_interests->mla_academic_interests_list() as $term ) {
 	} else {
 		WP_CLI::success( "primed '$term'" );
 	}
-
-	//WP_CLI::debug( print_r( $result->get_data(), true ) );
 }

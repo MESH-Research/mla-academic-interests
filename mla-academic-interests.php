@@ -1,13 +1,22 @@
 <?php
-/*
-Plugin Name: MLA Academic Interests
-Version: 1.0
-Description: Implement Academic Interests user taxonomy.
-Author: mla
-*/
+/**
+ * Plugin Name: MLA Academic Interests
+ * Version: 1.0
+ * Description: Implement Academic Interests user taxonomy.
+ * Author: mla
+ *
+ * @package Mla_Academic_Interests
+ */
 
-class Mla_Academic_Interests {
+/**
+ * Main class
+ */
+class Mla_Academic_Interests
+{
 
+	/**
+	 * Constructor
+	 */
 	public function __construct() {
 
 		add_action( 'init', array( $this, 'register_mla_academic_interests_taxonomy' ) );
@@ -15,8 +24,8 @@ class Mla_Academic_Interests {
 		add_action( 'wp_enqueue_scripts', array( $this, 'mla_academic_interests_cssjs' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'mla_academic_interests_cssjs' ) );
 
-        	$current_network = get_current_site();
-        	if ( 1 === (int) $current_network->id ) {
+			$current_network = get_current_site();
+		if ( 1 === (int) $current_network->id ) {
 			add_action( 'admin_menu', array( $this, 'mla_academic_interests_admin_page' ) );
 			add_filter( 'parent_file', array( $this, 'mla_academic_interests_fix_menu_highlight' ) );
 			add_filter( 'manage_edit-mla_academic_interests_columns', array( $this, 'manage_mla_academic_interests_user_column' ) );
@@ -34,36 +43,37 @@ class Mla_Academic_Interests {
 	 * Register academic interests taxonomy.
 	 */
 	public function register_mla_academic_interests_taxonomy() {
+
 		// Add new taxonomy, NOT hierarchical (like tags).
 		$labels = array(
-			'name'				=> _x( 'Interests', 'taxonomy general name' ),
-			'singular_name'			=> _x( 'Interest', 'taxonomy singular name' ),
-			'search_items'			=> __( 'Search Interests' ),
-			'popular_items'			=> __( 'Popular Interests' ),
-			'all_items'			=> __( 'All Interests' ),
-			'parent_item'			=> null,
-			'parent_item_colon'		=> null,
-			'edit_item'			=> __( 'Edit Interest' ),
-			'update_item'			=> __( 'Update Interest' ),
-			'add_new_item'			=> __( 'Add New Interest' ),
-			'new_item_name'			=> __( 'New Interest Name' ),
-			'separate_items_with_commas'	=> __( 'Separate interests with commas' ),
-			'add_or_remove_items'		=> __( 'Add or remove interests' ),
-			'choose_from_most_used'		=> __( 'Choose from the most used interests' ),
-			'not_found'			=> __( 'No interests found.' ),
-			'menu_name'			=> __( 'Interests' ),
+		'name'                => _x( 'Interests', 'taxonomy general name' ),
+		'singular_name'            => _x( 'Interest', 'taxonomy singular name' ),
+		'search_items'            => __( 'Search Interests' ),
+		'popular_items'            => __( 'Popular Interests' ),
+		'all_items'            => __( 'All Interests' ),
+		'parent_item'            => null,
+		'parent_item_colon'        => null,
+		'edit_item'            => __( 'Edit Interest' ),
+		'update_item'            => __( 'Update Interest' ),
+		'add_new_item'            => __( 'Add New Interest' ),
+		'new_item_name'            => __( 'New Interest Name' ),
+		'separate_items_with_commas'    => __( 'Separate interests with commas' ),
+		'add_or_remove_items'        => __( 'Add or remove interests' ),
+		'choose_from_most_used'        => __( 'Choose from the most used interests' ),
+		'not_found'            => __( 'No interests found.' ),
+		'menu_name'            => __( 'Interests' ),
 		);
 
 		$args = array(
-			'public'			=> false,
-			'hierarchical'			=> false,
-			'labels'			=> $labels,
-			'show_ui'			=> true,
-			'show_in_nav_menus'		=> false,
-			'show_admin_column'		=> false,
-			'update_count_callback'		=> '_update_generic_term_count',
-			'query_var'			=> 'academic_interests',
-			'rewrite'			=> false,
+		'public'            => false,
+		'hierarchical'            => false,
+		'labels'            => $labels,
+		'show_ui'            => true,
+		'show_in_nav_menus'        => false,
+		'show_admin_column'        => false,
+		'update_count_callback'        => '_update_generic_term_count',
+		'query_var'            => 'academic_interests',
+		'rewrite'            => false,
 		);
 
 		register_taxonomy( 'mla_academic_interests', array( 'user' ), $args );
@@ -101,9 +111,9 @@ class Mla_Academic_Interests {
 		$interest_terms = wpmn_get_terms(
 			'mla_academic_interests',
 			array(
-				'orderby' => 'name',
-				'fields' => 'all',
-				'hide_empty' => 0,
+			'orderby' => 'name',
+			'fields' => 'all',
+			'hide_empty' => 0,
 			)
 		);
 		foreach ( $interest_terms as $term ) {
@@ -134,9 +144,10 @@ class Mla_Academic_Interests {
 	/**
 	 * Fix taxonomy page so it highlights users instead of posts.
 	 *
+	 * @param string $parent_file passed by apply_filters().
 	 * @return string
 	 */
-	public function mla_academic_interests_fix_menu_highlight( $parent_file = '' ) {
+	public function mla_academic_interests_fix_menu_highlight( string $parent_file = '' ) {
 
 		global $pagenow;
 
@@ -163,17 +174,20 @@ class Mla_Academic_Interests {
 	/**
 	 * Create custom column value(s) for the manage mla_academic_interests page.
 	 *
+	 * @param string     $out passed by apply_filters().
+	 * @param string     $column_name passed by apply_filters().
+	 * @param int|string $term_id passed by apply_filters().
 	 * @return string
 	 */
-	public function manage_mla_interests_columns( $out, $column_name, $term_id ) {
+	public function manage_mla_interests_columns( string $out, string $column_name, $term_id ) {
 
 		switch ( $column_name ) {
 			case 'users':
 				$term = wpmn_get_term( $term_id, 'mla_academic_interests' );
 				$out .= $term->count;
-				break;
+			break;
 			default:
-				break;
+			break;
 		}
 
 		return $out;
@@ -198,38 +212,39 @@ class Mla_Academic_Interests {
 		/* Get the terms of the 'mla_academic_interests' taxonomy. */
 		$terms = wpmn_get_terms( 'mla_academic_interests', array( 'hide_empty' => false ) ); ?>
 
-		<h3><?php _e( 'Academic Interests' ); ?></h3>
+     <h3><?php _e( 'Academic Interests' ); ?></h3>
 
-		<table class="form-table">
+     <table class="form-table">
 
-			<tr>
-				<th><label for="academic-interests"><?php _e( 'Selected Interests' ); ?></label></th>
+      <tr>
+       <th><label for="academic-interests"><?php _e( 'Selected Interests' ); ?></label></th>
 
-				<td><?php
+       <td><?php
 
 				$html = '<span class="description">Enter interests from the existing list, or add new interests if needed.</span><br />';
 				$html .= '<select name="academic-interests[]" class="js-basic-multiple-tags interests" multiple="multiple" data-placeholder="Enter interests.">';
 				$interest_list = $this->mla_academic_interests_list();
 				$input_interest_list = wpmn_get_object_terms( $user->ID, 'mla_academic_interests', array( 'fields' => 'names' ) );
 
-				// only add selected interests, load the rest over ajax
-				foreach ( $interest_list as $interest_key => $interest_value ) {
-					if ( in_array( $interest_key, $input_interest_list ) ) {
-						$html .= sprintf('			<option class="level-1" selected="selected" value="%1$s">%2$s</option>' . "\n",
-							$interest_key,
-							$interest_value
-						);
-					}
-				}
+				// Only add selected interests, load the rest over ajax.
+		foreach ( $interest_list as $interest_key => $interest_value ) {
+			if ( in_array( $interest_key, $input_interest_list ) ) {
+				$html .= sprintf(
+					'			<option class="level-1" selected="selected" value="%1$s">%2$s</option>' . "\n",
+					$interest_key,
+					$interest_value
+				);
+			}
+		}
 
 				$html .= '</select>';
 				echo $html;
 
 				?></td>
-			</tr>
+      </tr>
 
-		</table>
-	<?php }
+     </table>
+    <?php }
 
 	/**
 	 * Saves the terms selected on the edit user/profile page in the admin.
@@ -244,9 +259,6 @@ class Mla_Academic_Interests {
 		if ( ! current_user_can( 'edit_user', $user_id ) && current_user_can( $tax->cap->assign_terms ) ) {
 			return false;
 		}
-/*		if ( ! wp_verify_nonce( $_POST['_wpnonce'] ) ) {
-			return false;
-		} */
 
 		// If array add any new keywords.
 		if ( is_array( $_POST['academic-interests'] ) ) {
@@ -274,7 +286,6 @@ class Mla_Academic_Interests {
 		}
 
 	}
-
 }
 
 global $mla_academic_interests;
@@ -284,7 +295,9 @@ $mla_academic_interests = new Mla_Academic_Interests;
 
 require_once dirname( __FILE__ ) . '/mla-academic-interests-rest-controller.php';
 
-add_action( 'rest_api_init', function () {
-	$controller = new Mla_Academic_Interests_REST_Controller;
-	$controller->register_routes();
-} );
+add_action(
+	'rest_api_init', function () {
+		$controller = new Mla_Academic_Interests_REST_Controller;
+		$controller->register_routes();
+	}
+);

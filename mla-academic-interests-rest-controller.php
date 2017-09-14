@@ -1,14 +1,24 @@
 <?php
+/**
+ * REST controller used by select2 to query terms.
+ *
+ * @package Mla_Academic_Interests
+ */
 
-class Mla_Academic_Interests_REST_Controller extends WP_REST_Controller {
+/**
+ * Controller.
+ */
+class Mla_Academic_Interests_REST_Controller extends WP_REST_Controller
+{
 
 	/**
 	 * Constructor.
 	 *
-	 * @since alpha
+	 * @since  alpha
 	 * @access public
 	 */
 	public function __construct() {
+
 		$this->namespace = 'mla-academic-interests/v1';
 		$this->rest_base = '/terms';
 	}
@@ -16,20 +26,23 @@ class Mla_Academic_Interests_REST_Controller extends WP_REST_Controller {
 	/**
 	 * Registers the routes for the objects of the controller.
 	 *
-	 * @since alpha
+	 * @since  alpha
 	 * @access public
 	 *
 	 * @see register_rest_route()
 	 */
 	public function register_routes() {
-		register_rest_route( $this->namespace, $this->rest_base, [
+
+		register_rest_route(
+			$this->namespace, $this->rest_base, [
 			'methods' => 'GET',
 			'callback' => [ $this, 'get_terms' ],
-		] );
+			]
+		);
 	}
 
 	/**
-	 * sort query results relative to user input:
+	 * Sort query results relative to user input:
 	 * ( case-insensitive )
 	 * 1 complete word matches
 	 * 2 matches at beginning of term
@@ -37,14 +50,15 @@ class Mla_Academic_Interests_REST_Controller extends WP_REST_Controller {
 	 *
 	 * Mla_Academic_Interests::mla_academic_interests_list() already uses natcasesort(), this does additional sorting
 	 *
-	 * @param array $matched_terms natcasesort()ed array of term objects containing properties 'id' & 'text' to be sorted
-	 * @param string $user_input search query
-	 * @return array $matched_terms sorted terms
+	 * @param  array  $matched_terms natcasesort()ed array of term objects containing properties 'id' & 'text' to be sorted.
+	 * @param  string $user_input    search query.
+	 * @return array $matched_terms sorted terms.
 	 */
 	public static function sort_matched_terms( array $matched_terms, string $user_input ) {
+
 		$sorted_terms = [];
 
-		// pull out matches at beginning of term first (complete word matches are first alphabetically)
+		// Pull out matches at beginning of term first (complete word matches are first alphabetically).
 		foreach ( $matched_terms as $i => $matched_term ) {
 			if ( 0 === strpos( strtolower( $matched_term->text ), strtolower( $user_input ) ) ) {
 				$sorted_terms[] = $matched_term;
@@ -52,7 +66,7 @@ class Mla_Academic_Interests_REST_Controller extends WP_REST_Controller {
 			}
 		}
 
-		// append the remaining terms to the sorted terms
+		// Append the remaining terms to the sorted terms.
 		$sorted_terms = array_merge( $sorted_terms, $matched_terms );
 
 		return $sorted_terms;
@@ -61,9 +75,11 @@ class Mla_Academic_Interests_REST_Controller extends WP_REST_Controller {
 	/**
 	 * Get list of terms that match $_GET['q']
 	 *
+	 * @param WP_REST_Request $data request data (expected to contain a query in the 'q' parameter).
 	 * @return WP_REST_Response
 	 */
-	public function get_terms( $data ) {
+	public function get_terms( WP_REST_Request $data ) {
+
 		global $mla_academic_interests;
 
 		$start_time = microtime();
@@ -84,7 +100,7 @@ class Mla_Academic_Interests_REST_Controller extends WP_REST_Controller {
 
 			$matched_terms = [];
 
-			// populate array of matches
+			// Populate array of matches.
 			foreach ( $all_terms as $term_id => $term ) {
 				if ( false !== strpos( strtolower( $term ), strtolower( $user_input ) ) ) {
 					$matched_term = new stdClass;
@@ -101,11 +117,13 @@ class Mla_Academic_Interests_REST_Controller extends WP_REST_Controller {
 
 		}
 
-		// formatted for select2 consumption
-		$response->set_data( [
+		// Formatted for select2 consumption.
+		$response->set_data(
+			[
 			'results' => $matched_terms,
-			//'time' => microtime() - $start_time, // for debugging
-		] );
+			// 'time' => microtime() - $start_time, // for debugging
+			]
+		);
 
 		return $response;
 	}

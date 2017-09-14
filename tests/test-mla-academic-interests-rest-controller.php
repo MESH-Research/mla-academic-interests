@@ -6,11 +6,16 @@
  */
 
 /**
- *
+ * Test class
  */
 class Mla_Academic_Interests_REST_ControllerTest extends WP_UnitTestCase {
 
 	/**
+	 * Ensure sorted terms match expected order.
+	 *
+	 * @param  array  $matched_terms natcasesort()ed array of term objects containing properties 'id' & 'text' to be sorted.
+	 * @param  array  $expected_sorted_terms expected return value of tested method.
+	 * @param  string $user_input    search query.
 	 * @dataProvider sort_matched_terms_provider
 	 */
 	function test_sort_matched_terms( array $matched_terms, array $expected_sorted_terms, string $user_input ) {
@@ -19,6 +24,9 @@ class Mla_Academic_Interests_REST_ControllerTest extends WP_UnitTestCase {
 		$this->assertEquals( $sorted_terms, $expected_sorted_terms );
 	}
 
+	/**
+	 * Provider for sort_matched_terms().
+	 */
 	function sort_matched_terms_provider() {
 		return [
 			[
