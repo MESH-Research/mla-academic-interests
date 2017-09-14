@@ -29,6 +29,36 @@ class Mla_Academic_Interests_REST_Controller extends WP_REST_Controller {
 	}
 
 	/**
+	 * sort query results relative to user input:
+	 * ( case-insensitive )
+	 * 1 complete word matches
+	 * 2 matches at beginning of term
+	 * 3 matches elsewhere in term
+	 *
+	 * Mla_Academic_Interests::mla_academic_interests_list() already uses natcasesort(), this does additional sorting
+	 *
+	 * @param array $matched_terms natcasesort()ed array of term objects containing properties 'id' & 'text' to be sorted
+	 * @param string $user_input search query
+	 * @return array $matched_terms sorted terms
+	 */
+	public static function sort_matched_terms( array $matched_terms, string $user_input ) {
+		$sorted_terms = [];
+
+		// pull out matches at beginning of term first (complete word matches are first alphabetically)
+		foreach ( $matched_terms as $i => $matched_term ) {
+			if ( 0 === strpos( strtolower( $matched_term->text ), strtolower( $user_input ) ) ) {
+				$sorted_terms[] = $matched_term;
+				unset( $matched_terms[ $i ] );
+			}
+		}
+
+		// append the remaining terms to the sorted terms
+		$sorted_terms = array_merge( $sorted_terms, $matched_terms );
+
+		return $sorted_terms;
+	}
+
+	/**
 	 * Get list of terms that match $_GET['q']
 	 *
 	 * @return WP_REST_Response
@@ -65,13 +95,7 @@ class Mla_Academic_Interests_REST_Controller extends WP_REST_Controller {
 				}
 			}
 
-			// prioritize matches with the first letters of a term by moving them to the front of the array
-			foreach ( array_reverse( $matched_terms, true ) as $i => $matched_term ) {
-				if ( 0 === strpos( strtolower( $matched_term->text ), strtolower( $user_input ) ) ) {
-					unset( $matched_terms[ $i ] );
-					array_unshift( $matched_terms, $matched_term );
-				}
-			}
+			$matched_terms = self::sort_matched_terms( $matched_terms, $user_input );
 
 			wp_cache_set( $cache_key, $matched_terms, null, 300 );
 
