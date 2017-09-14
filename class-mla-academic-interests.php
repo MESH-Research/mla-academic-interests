@@ -304,7 +304,7 @@ $mla_academic_interests = new Mla_Academic_Interests;
 
 
 
-require_once dirname( __FILE__ ) . '/mla-academic-interests-rest-controller.php';
+require_once dirname( __FILE__ ) . '/class-mla-academic-interests-rest-controller.php';
 
 add_action(
 	'rest_api_init', function () {
