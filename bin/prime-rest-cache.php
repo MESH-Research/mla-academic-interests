@@ -21,7 +21,11 @@ $rest_controller = new Mla_Academic_Interests_REST_Controller;
 
 foreach ( $mla_academic_interests->mla_academic_interests_list() as $term ) {
 	$request = new WP_REST_Request( 'GET', '/mla-academic-interests/v1/terms' );
-	$request->set_query_params( [ 'q' => $term ] );
+	$request->set_query_params(
+		[
+			'q' => $term,
+		]
+	);
 
 	$result = $rest_controller->get_terms( $request );
 

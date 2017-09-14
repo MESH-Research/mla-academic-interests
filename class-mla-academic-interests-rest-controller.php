@@ -8,8 +8,8 @@
 /**
  * Controller.
  */
-class Mla_Academic_Interests_REST_Controller extends WP_REST_Controller
-{
+class Mla_Academic_Interests_REST_Controller extends WP_REST_Controller {
+
 
 	/**
 	 * Constructor.
@@ -35,8 +35,8 @@ class Mla_Academic_Interests_REST_Controller extends WP_REST_Controller
 
 		register_rest_route(
 			$this->namespace, $this->rest_base, [
-			'methods' => 'GET',
-			'callback' => [ $this, 'get_terms' ],
+				'methods' => 'GET',
+				'callback' => [ $this, 'get_terms' ],
 			]
 		);
 	}
@@ -120,7 +120,7 @@ class Mla_Academic_Interests_REST_Controller extends WP_REST_Controller
 		// Formatted for select2 consumption.
 		$response->set_data(
 			[
-			'results' => $matched_terms,
+				'results' => $matched_terms,
 			// 'time' => microtime() - $start_time, // for debugging
 			]
 		);
