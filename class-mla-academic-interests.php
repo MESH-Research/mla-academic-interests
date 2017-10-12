@@ -202,10 +202,6 @@ class Mla_Academic_Interests {
 
 		$tax = get_taxonomy( 'mla_academic_interests' );
 
-		/* Make sure the user can assign terms of the mla_academic_interests taxonomy before proceeding. */
-		if ( ! current_user_can( $tax->cap->assign_terms ) ) {
-			return;
-		}
 		/* Get the terms of the 'mla_academic_interests' taxonomy. */
 		$terms = wpmn_get_terms(
 			'mla_academic_interests', array(
