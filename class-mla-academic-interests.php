@@ -220,7 +220,7 @@ class Mla_Academic_Interests {
 		<?php
 
 				$html = '<span class="description">Enter interests from the existing list, or add new interests if needed.</span><br />';
-				$html .= '<select name="academic-interests[]" class="js-basic-multiple-tags interests" multiple="multiple" data-placeholder="Enter interests.">';
+				$html .= '<select name="academic-interests[]" class="js-basic-multiple-academic-interests-tags interests" multiple="multiple" data-placeholder="Enter interests.">';
 				$interest_list = $this->mla_academic_interests_list();
 				$input_interest_list = wpmn_get_object_terms(
 					$user->ID, 'mla_academic_interests', array(
